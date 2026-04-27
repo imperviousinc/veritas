@@ -2,13 +2,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
+WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$WORKSPACE_ROOT"
 
 LIB_NAME="libvertias_app_core"
 FFI_NAME="vertias_app_coreFFI"
 SWIFT_FILE="vertias_app_core"
-OUT_DIR="build/swift"
-APP_DIR="../app/veritas"
+OUT_DIR="core/build/swift"
+APP_DIR="app/veritas"
 
 echo "==> Building for macOS (arm64)..."
 cargo build --release --target aarch64-apple-darwin
