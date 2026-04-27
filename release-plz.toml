@@ -2,8 +2,6 @@
 changelog_path = "CHANGELOG.md"
 changelog_update = true
 pr_draft = false
-# Only these conventional commits trigger a version bump
-release_commits = "^(feat|fix|perf|refactor|build|chore|test|revert)(\\(.*\\))?!?:"
 
 [changelog]
 header = """# Changelog
