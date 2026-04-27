@@ -84,6 +84,16 @@ jobs:
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
+      - name: Install provisioning profiles
+        env:
+          MACOS_PROVISIONING_PROFILE: ${{ secrets.MACOS_PROVISIONING_PROFILE }}
+          VERITASSHARE_PROVISIONING_PROFILE: ${{ secrets.VERITASSHARE_PROVISIONING_PROFILE }}
+        run: |
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILES_DIR"
+          echo -n "$MACOS_PROVISIONING_PROFILE" | base64 --decode -o "$PROFILES_DIR/veritas.provisionprofile"
+          echo -n "$VERITASSHARE_PROVISIONING_PROFILE" | base64 --decode -o "$PROFILES_DIR/veritasshare.provisionprofile"
+
       - name: Build and archive
         run: |
           xcodebuild archive \
@@ -91,10 +101,7 @@ jobs:
             -scheme "$SCHEME" \
             -configuration Release \
             -archivePath $RUNNER_TEMP/Veritas.xcarchive \
-            -destination "generic/platform=macOS" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="${{ secrets.APPLE_SIGNING_IDENTITY }}" \
-            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+            -destination "generic/platform=macOS"
 
       - name: Export app
         run: |
