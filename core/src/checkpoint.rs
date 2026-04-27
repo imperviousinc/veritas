@@ -34,7 +34,7 @@ pub(crate) fn yuki_checkpoint(data_dir: &Path, network: ExtendedNetwork) -> Stri
 /// Downloads and extracts a checkpoint if no existing data is found.
 /// Pass a `Checkpoint` to use a specific one, or `None` for the hardcoded default.
 pub(crate) fn download_checkpoint(
-    data_dir: &PathBuf,
+    data_dir: &Path,
     network: ExtendedNetwork,
     status: &SharedSyncStatus,
     checkpoint: Option<Checkpoint>,

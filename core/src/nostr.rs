@@ -76,7 +76,7 @@ pub(crate) async fn find_message(
         })
         .collect();
 
-    results.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+    results.sort_by_key(|m| std::cmp::Reverse(m.created_at));
     Ok(results)
 }
 
@@ -218,10 +218,10 @@ async fn fetch_tagged(
 
             match arr.first().and_then(|v| v.as_str()) {
                 Some("EVENT") if arr.len() >= 3 => {
-                    if let Some(event) = parse_event(&arr[2]) {
-                        if verify_event(&event) {
-                            events.push(event);
-                        }
+                    if let Some(event) = parse_event(&arr[2])
+                        && verify_event(&event)
+                    {
+                        events.push(event);
                     }
                 }
                 Some("EOSE") => break,
