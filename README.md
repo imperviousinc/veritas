@@ -14,6 +14,15 @@ app/               macOS/iOS app (Xcode)
 build-core.sh      Builds the Rust library and copies Swift bindings into app/
 ```
 
+## How to create a searchable note
+
+Publish any nostr note on a relay and use `#veritas`. Make sure, the ADDR record you publish to certrelay has the nostr relay included e.g.
+
+```
+type=addr, key=nostr, value = [ "npub1...", "wss://relay.example.com" ]
+```
+
+
 ## Building
 
 ### Rust
