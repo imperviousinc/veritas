@@ -43,8 +43,9 @@ commit_parsers = [
 
 [[package]]
 name = "vertias-app-core"
-# This package is not published to crates.io — use git tags to track versions.
+# Not published to crates.io: use git tags to track versions, skip cargo publish.
 git_only = true
+publish = false
 git_release_enable = true
 git_release_latest = true
 git_tag_name = "v{{ version }}"
