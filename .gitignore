@@ -1,8 +1,7 @@
 # Rust
 target/
-core/target/
-core/build/
-core/.env
+build/
+.env
 
 # Xcode
 app/**/DerivedData/
@@ -17,3 +16,6 @@ app/veritas/vertias_app_coreFFI.xcframework/
 .idea/
 *.swp
 .DS_Store
+
+# Local debugging
+logs.txt

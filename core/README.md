@@ -28,11 +28,11 @@ Options:
 
 ## Architecture
 
-- **`src/lib.rs`** - `Veritas` UniFFI object: manages service lifecycle, exposes async RPC methods to Swift
-- **`src/runner.rs`** - `ServiceRunner`: launches yuki and spaced in isolated threads with dedicated tokio runtimes
-- **`src/checkpoint.rs`** - Checkpoint download/verification on first launch
-- **`src/nostr.rs`** - Nostr relay communication: fetch and verify `#veritas` tagged events
-- **`src/logging.rs`** - Tracing capture layer that buffers log entries for the Swift log viewer
+- **`core/src/lib.rs`** - `Veritas` UniFFI object: manages service lifecycle, exposes async RPC methods to Swift
+- **`core/src/runner.rs`** - `ServiceRunner`: launches yuki and spaced in isolated threads with dedicated tokio runtimes
+- **`core/src/checkpoint.rs`** - Checkpoint download/verification on first launch
+- **`core/src/nostr.rs`** - Nostr relay communication: fetch and verify `#veritas` tagged events
+- **`core/src/logging.rs`** - Tracing capture layer that buffers log entries for the Swift log viewer
 
 ### Data directory
 

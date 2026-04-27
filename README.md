@@ -2,19 +2,23 @@
 
 A menu bar trust anchor for the [Spaces protocol](https://spacesprotocol.org). Embeds a Bitcoin light node and a spaces client to verify handles directly - no trusted servers.
 
+![Veritas](screenshot.png)
+
 ## Structure
 
 ```
-core/     Rust backend (UniFFI library + CLI)
-app/      macOS/iOS app (Xcode)
+Cargo.toml         Single Rust package at root
+core/src/          Rust library sources
+core/bin/          Rust binary entry points
+app/               macOS/iOS app (Xcode)
+build-core.sh      Builds the Rust library and copies Swift bindings into app/
 ```
 
 ## Building
 
-### Rust core
+### Rust
 
 ```bash
-cd core
 cargo build
 ```
 
@@ -31,8 +35,7 @@ See [core/README.md](core/README.md) for CLI options and architecture details.
 Build the Rust library for all Apple targets and copy bindings into the Xcode project:
 
 ```bash
-cd core
-./build-local.sh
+./build-core.sh
 ```
 
 Then open `app/veritas.xcodeproj` in Xcode and build normally.
