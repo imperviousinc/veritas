@@ -43,10 +43,8 @@ commit_parsers = [
 
 [[package]]
 name = "vertias-app-core"
-# Cargo.toml has publish = false, but we still want release-plz to bump
-# version and create git tags/releases for this package.
-release = true
-publish = false
+# This package is not published to crates.io — use git tags to track versions.
+git_only = true
 git_release_enable = true
 git_release_latest = true
 git_tag_name = "v{{ version }}"
