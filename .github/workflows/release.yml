@@ -104,14 +104,27 @@ jobs:
             -destination "generic/platform=macOS"
 
       - name: Export app
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          cat > $RUNNER_TEMP/ExportOptions.plist << 'EOF'
+          cat > $RUNNER_TEMP/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
             <string>developer-id</string>
+            <key>teamID</key>
+            <string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.impervious.veritas</key>
+              <string>Veritas Developer ID</string>
+              <key>com.impervious.veritas.VeritasShare</key>
+              <string>VeritasShare Developer ID</string>
+            </dict>
           </dict>
           </plist>
           EOF
