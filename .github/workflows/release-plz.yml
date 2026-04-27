@@ -30,13 +30,14 @@ jobs:
 
       # Sync the Cargo version into the Xcode project on the release PR branch
       - name: Sync Xcode version
-        if: steps.release-plz.outputs.prs_created == 'true' || steps.release-plz.outputs.prs_updated == 'true'
+        if: steps.release-plz.outputs.prs_created == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_DATA: ${{ steps.release-plz.outputs.pr }}
         run: |
-          PR_BRANCH=$(gh pr list --label "release" --json headRefName -q '.[0].headRefName')
-          if [ -z "$PR_BRANCH" ]; then
-            echo "No release PR branch found, skipping"
+          PR_BRANCH=$(echo "$PR_DATA" | jq -r '.head_branch')
+          if [ -z "$PR_BRANCH" ] || [ "$PR_BRANCH" = "null" ]; then
+            echo "No release PR branch in output, skipping"
             exit 0
           fi
           git fetch origin "$PR_BRANCH"
