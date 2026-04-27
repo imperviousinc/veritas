@@ -9,7 +9,7 @@ use tokio_tungstenite::tungstenite::Message as WsMessage;
 
 use crate::VeritasError;
 
-const RELAY_TIMEOUT: Duration = Duration::from_secs(10);
+const RELAY_TIMEOUT: Duration = Duration::from_secs(12);
 
 #[derive(uniffi::Record)]
 pub struct NostrMessage {
