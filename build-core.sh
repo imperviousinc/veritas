@@ -2,13 +2,12 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-cd "$WORKSPACE_ROOT"
+cd "$SCRIPT_DIR"
 
 LIB_NAME="libvertias_app_core"
 FFI_NAME="vertias_app_coreFFI"
 SWIFT_FILE="vertias_app_core"
-OUT_DIR="core/build/swift"
+OUT_DIR="build/swift"
 APP_DIR="app/veritas"
 
 echo "==> Building for macOS (arm64)..."
