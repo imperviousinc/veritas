@@ -1,0 +1,46 @@
+[package]
+name = "vertias-app-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["staticlib", "lib"]
+
+[[bin]]
+name = "veritas"
+path = "bin/veritas.rs"
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "bin/uniffi_bindgen.rs"
+
+[dependencies]
+tokio = { version = "1.37", features = ["sync", "rt-multi-thread", "macros"] }
+spaces_client = "0.1"
+spaces_nums = "0.1"
+spaces_protocol = { version = "0.1", features = ["std"] }
+spaces_checkpoint = "0.1"
+fabric = { package = "fabric-resolver", version = "0.2" }
+yuki = { package = "bitcoin_yuki", version = "0.0.1" }
+anyhow = "1.0.102"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3", features = ["tracing-log"] }
+dirs = "6"
+thiserror = "2"
+serde_json = "1"
+hex = "0.4"
+uniffi = { version = "0.31", features = ["cli", "tokio"] }
+clap = { version = "4", features = ["derive"] }
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-webpki-roots"], optional = true }
+futures-util = { version = "0.3", optional = true }
+simsearch = { version = "0.3", optional = true }
+
+[features]
+default = ["nostr"]
+nostr = ["dep:tokio-tungstenite", "dep:futures-util", "dep:simsearch"]
+
+[build-dependencies]
+uniffi = { version = "0.31", features = ["build"] }

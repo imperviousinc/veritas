@@ -1,0 +1,156 @@
+name: Build & Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  LIB_NAME: libvertias_app_core
+  FFI_NAME: vertias_app_coreFFI
+  SWIFT_FILE: vertias_app_core
+  SCHEME: veritas
+  APP_NAME: Veritas
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core
+
+      - name: Build Rust libraries
+        working-directory: core
+        run: |
+          cargo build --release --target aarch64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
+
+      - name: Generate Swift bindings
+        working-directory: core
+        run: |
+          cargo run --bin uniffi-bindgen generate \
+            --library target/aarch64-apple-darwin/release/${LIB_NAME}.a \
+            --language swift \
+            --out-dir bindings
+
+      - name: Create universal binary and XCFramework
+        working-directory: core
+        run: |
+          mkdir -p headers
+          cp bindings/${FFI_NAME}.h headers/
+          cp bindings/${FFI_NAME}.modulemap headers/module.modulemap
+
+          mkdir -p lipo
+          lipo -create \
+            target/aarch64-apple-darwin/release/${LIB_NAME}.a \
+            target/x86_64-apple-darwin/release/${LIB_NAME}.a \
+            -output lipo/${LIB_NAME}.a
+
+          xcodebuild -create-xcframework \
+            -library lipo/${LIB_NAME}.a \
+            -headers headers/ \
+            -output ${FFI_NAME}.xcframework
+
+      - name: Copy bindings into Xcode project
+        run: |
+          cp core/bindings/${SWIFT_FILE}.swift app/veritas/
+          cp -R core/${FFI_NAME}.xcframework app/veritas/
+
+      - name: Import signing certificate
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+      - name: Build and archive
+        run: |
+          xcodebuild archive \
+            -project app/veritas.xcodeproj \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/Veritas.xcarchive \
+            -destination "generic/platform=macOS" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="${{ secrets.APPLE_SIGNING_IDENTITY }}" \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+
+      - name: Export app
+        run: |
+          cat > $RUNNER_TEMP/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>developer-id</string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/Veritas.xcarchive \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
+            -exportPath $RUNNER_TEMP/export
+
+      - name: Create DMG
+        run: |
+          brew install create-dmg
+          create-dmg \
+            --volname "Veritas" \
+            --window-pos 200 120 \
+            --window-size 600 330 \
+            --icon-size 100 \
+            --icon "Veritas.app" 170 125 \
+            --app-drop-link 410 120 \
+            --hide-extension "Veritas.app" \
+            --codesign "${{ secrets.APPLE_SIGNING_IDENTITY }}" \
+            --hdiutil-quiet \
+            "Veritas-${{ steps.version.outputs.version }}.dmg" \
+            "$RUNNER_TEMP/export/Veritas.app"
+
+      - name: Notarize DMG
+        run: |
+          xcrun notarytool submit "Veritas-${{ steps.version.outputs.version }}.dmg" \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --password "${{ secrets.APP_SPECIFIC_PASSWORD }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --wait
+          xcrun stapler staple "Veritas-${{ steps.version.outputs.version }}.dmg"
+          xcrun stapler validate "Veritas-${{ steps.version.outputs.version }}.dmg"
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.event_name == 'workflow_dispatch' && 'Development Build' || 'Release' }} ${{ steps.version.outputs.version }}
+          draft: ${{ github.event_name == 'workflow_dispatch' }}
+          files: Veritas-${{ steps.version.outputs.version }}.dmg
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

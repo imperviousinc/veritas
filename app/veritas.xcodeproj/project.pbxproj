@@ -1,0 +1,782 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 70;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		473A20C52F743C4A0056F92B /* vertias_app_core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473A20C32F743C4A0056F92B /* vertias_app_core.swift */; };
+		473A20C62F743C4A0056F92B /* vertias_app_coreFFI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 473A20C42F743C4A0056F92B /* vertias_app_coreFFI.xcframework */; };
+		473A20CA2F74C6BC0056F92B /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473A20C82F74C3C60056F92B /* SharedConstants.swift */; };
+		473A20CB2F74C6C10056F92B /* ImageOCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473A20C92F74C3D90056F92B /* ImageOCR.swift */; };
+		473A20DC2F74C71E0056F92B /* VeritasShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 473A20D02F74C71E0056F92B /* VeritasShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		473A20E32F74C8260056F92B /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473A20C82F74C3C60056F92B /* SharedConstants.swift */; };
+		473A20E42F74C8260056F92B /* ImageOCR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473A20C92F74C3D90056F92B /* ImageOCR.swift */; };
+		4744F8B22F72BAB500682AF2 /* veritasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4744F8B12F72BAB500682AF2 /* veritasApp.swift */; };
+		4744F8B42F72BAB500682AF2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4744F8B32F72BAB500682AF2 /* ContentView.swift */; };
+		4744F8B62F72BAB600682AF2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4744F8B52F72BAB600682AF2 /* Assets.xcassets */; };
+		4744F8B92F72BAB600682AF2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4744F8B82F72BAB600682AF2 /* Preview Assets.xcassets */; };
+		4744F8C42F72BAB700682AF2 /* veritasTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4744F8C32F72BAB700682AF2 /* veritasTests.swift */; };
+		4744F8CE2F72BAB700682AF2 /* veritasUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4744F8CD2F72BAB700682AF2 /* veritasUITests.swift */; };
+		4744F8D02F72BAB700682AF2 /* veritasUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4744F8CF2F72BAB700682AF2 /* veritasUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		473A20DA2F74C71E0056F92B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4744F8A62F72BAB500682AF2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 473A20CF2F74C71E0056F92B;
+			remoteInfo = VeritasShare;
+		};
+		4744F8C02F72BAB700682AF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4744F8A62F72BAB500682AF2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4744F8AD2F72BAB500682AF2;
+			remoteInfo = veritas;
+		};
+		4744F8CA2F72BAB700682AF2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4744F8A62F72BAB500682AF2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4744F8AD2F72BAB500682AF2;
+			remoteInfo = veritas;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		473A20E12F74C71E0056F92B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				473A20DC2F74C71E0056F92B /* VeritasShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		473A20C32F743C4A0056F92B /* vertias_app_core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vertias_app_core.swift; sourceTree = "<group>"; };
+		473A20C42F743C4A0056F92B /* vertias_app_coreFFI.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = vertias_app_coreFFI.xcframework; sourceTree = "<group>"; };
+		473A20C82F74C3C60056F92B /* SharedConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedConstants.swift; sourceTree = "<group>"; };
+		473A20C92F74C3D90056F92B /* ImageOCR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOCR.swift; sourceTree = "<group>"; };
+		473A20D02F74C71E0056F92B /* VeritasShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = VeritasShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		473A20E52F74C93B0056F92B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4744F8AE2F72BAB500682AF2 /* veritas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = veritas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4744F8B12F72BAB500682AF2 /* veritasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = veritasApp.swift; sourceTree = "<group>"; };
+		4744F8B32F72BAB500682AF2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4744F8B52F72BAB600682AF2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4744F8B82F72BAB600682AF2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4744F8BA2F72BAB600682AF2 /* veritas.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = veritas.entitlements; sourceTree = "<group>"; };
+		4744F8BF2F72BAB700682AF2 /* veritasTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = veritasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4744F8C32F72BAB700682AF2 /* veritasTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = veritasTests.swift; sourceTree = "<group>"; };
+		4744F8C92F72BAB700682AF2 /* veritasUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = veritasUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4744F8CD2F72BAB700682AF2 /* veritasUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = veritasUITests.swift; sourceTree = "<group>"; };
+		4744F8CF2F72BAB700682AF2 /* veritasUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = veritasUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		473A20DD2F74C71E0056F92B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 473A20CF2F74C71E0056F92B /* VeritasShare */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		473A20D12F74C71E0056F92B /* VeritasShare */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (473A20DD2F74C71E0056F92B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VeritasShare; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		473A20CD2F74C71E0056F92B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8AB2F72BAB500682AF2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				473A20C62F743C4A0056F92B /* vertias_app_coreFFI.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8BC2F72BAB700682AF2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8C62F72BAB700682AF2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4744F8A52F72BAB500682AF2 = {
+			isa = PBXGroup;
+			children = (
+				4744F8B02F72BAB500682AF2 /* veritas */,
+				4744F8C22F72BAB700682AF2 /* veritasTests */,
+				4744F8CC2F72BAB700682AF2 /* veritasUITests */,
+				473A20D12F74C71E0056F92B /* VeritasShare */,
+				4744F8AF2F72BAB500682AF2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4744F8AF2F72BAB500682AF2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4744F8AE2F72BAB500682AF2 /* veritas.app */,
+				4744F8BF2F72BAB700682AF2 /* veritasTests.xctest */,
+				4744F8C92F72BAB700682AF2 /* veritasUITests.xctest */,
+				473A20D02F74C71E0056F92B /* VeritasShare.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4744F8B02F72BAB500682AF2 /* veritas */ = {
+			isa = PBXGroup;
+			children = (
+				473A20E52F74C93B0056F92B /* Info.plist */,
+				4744F8B12F72BAB500682AF2 /* veritasApp.swift */,
+				4744F8B32F72BAB500682AF2 /* ContentView.swift */,
+				473A20C32F743C4A0056F92B /* vertias_app_core.swift */,
+				473A20C42F743C4A0056F92B /* vertias_app_coreFFI.xcframework */,
+				4744F8B52F72BAB600682AF2 /* Assets.xcassets */,
+				4744F8BA2F72BAB600682AF2 /* veritas.entitlements */,
+				4744F8B72F72BAB600682AF2 /* Preview Content */,
+				473A20C82F74C3C60056F92B /* SharedConstants.swift */,
+				473A20C92F74C3D90056F92B /* ImageOCR.swift */,
+			);
+			path = veritas;
+			sourceTree = "<group>";
+		};
+		4744F8B72F72BAB600682AF2 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4744F8B82F72BAB600682AF2 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4744F8C22F72BAB700682AF2 /* veritasTests */ = {
+			isa = PBXGroup;
+			children = (
+				4744F8C32F72BAB700682AF2 /* veritasTests.swift */,
+			);
+			path = veritasTests;
+			sourceTree = "<group>";
+		};
+		4744F8CC2F72BAB700682AF2 /* veritasUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4744F8CD2F72BAB700682AF2 /* veritasUITests.swift */,
+				4744F8CF2F72BAB700682AF2 /* veritasUITestsLaunchTests.swift */,
+			);
+			path = veritasUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		473A20CF2F74C71E0056F92B /* VeritasShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 473A20DE2F74C71E0056F92B /* Build configuration list for PBXNativeTarget "VeritasShare" */;
+			buildPhases = (
+				473A20CC2F74C71E0056F92B /* Sources */,
+				473A20CD2F74C71E0056F92B /* Frameworks */,
+				473A20CE2F74C71E0056F92B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				473A20D12F74C71E0056F92B /* VeritasShare */,
+			);
+			name = VeritasShare;
+			packageProductDependencies = (
+			);
+			productName = VeritasShare;
+			productReference = 473A20D02F74C71E0056F92B /* VeritasShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		4744F8AD2F72BAB500682AF2 /* veritas */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4744F8D32F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritas" */;
+			buildPhases = (
+				4744F8AA2F72BAB500682AF2 /* Sources */,
+				4744F8AB2F72BAB500682AF2 /* Frameworks */,
+				4744F8AC2F72BAB500682AF2 /* Resources */,
+				473A20E12F74C71E0056F92B /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				473A20DB2F74C71E0056F92B /* PBXTargetDependency */,
+			);
+			name = veritas;
+			productName = veritas;
+			productReference = 4744F8AE2F72BAB500682AF2 /* veritas.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4744F8BE2F72BAB700682AF2 /* veritasTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4744F8D62F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritasTests" */;
+			buildPhases = (
+				4744F8BB2F72BAB700682AF2 /* Sources */,
+				4744F8BC2F72BAB700682AF2 /* Frameworks */,
+				4744F8BD2F72BAB700682AF2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4744F8C12F72BAB700682AF2 /* PBXTargetDependency */,
+			);
+			name = veritasTests;
+			productName = veritasTests;
+			productReference = 4744F8BF2F72BAB700682AF2 /* veritasTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4744F8C82F72BAB700682AF2 /* veritasUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4744F8D92F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritasUITests" */;
+			buildPhases = (
+				4744F8C52F72BAB700682AF2 /* Sources */,
+				4744F8C62F72BAB700682AF2 /* Frameworks */,
+				4744F8C72F72BAB700682AF2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4744F8CB2F72BAB700682AF2 /* PBXTargetDependency */,
+			);
+			name = veritasUITests;
+			productName = veritasUITests;
+			productReference = 4744F8C92F72BAB700682AF2 /* veritasUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4744F8A62F72BAB500682AF2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					473A20CF2F74C71E0056F92B = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					4744F8AD2F72BAB500682AF2 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+					4744F8BE2F72BAB700682AF2 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 4744F8AD2F72BAB500682AF2;
+					};
+					4744F8C82F72BAB700682AF2 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 4744F8AD2F72BAB500682AF2;
+					};
+				};
+			};
+			buildConfigurationList = 4744F8A92F72BAB500682AF2 /* Build configuration list for PBXProject "veritas" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4744F8A52F72BAB500682AF2;
+			productRefGroup = 4744F8AF2F72BAB500682AF2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4744F8AD2F72BAB500682AF2 /* veritas */,
+				4744F8BE2F72BAB700682AF2 /* veritasTests */,
+				4744F8C82F72BAB700682AF2 /* veritasUITests */,
+				473A20CF2F74C71E0056F92B /* VeritasShare */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		473A20CE2F74C71E0056F92B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8AC2F72BAB500682AF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4744F8B92F72BAB600682AF2 /* Preview Assets.xcassets in Resources */,
+				4744F8B62F72BAB600682AF2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8BD2F72BAB700682AF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8C72F72BAB700682AF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		473A20CC2F74C71E0056F92B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				473A20E32F74C8260056F92B /* SharedConstants.swift in Sources */,
+				473A20E42F74C8260056F92B /* ImageOCR.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8AA2F72BAB500682AF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				473A20CB2F74C6C10056F92B /* ImageOCR.swift in Sources */,
+				473A20CA2F74C6BC0056F92B /* SharedConstants.swift in Sources */,
+				4744F8B42F72BAB500682AF2 /* ContentView.swift in Sources */,
+				4744F8B22F72BAB500682AF2 /* veritasApp.swift in Sources */,
+				473A20C52F743C4A0056F92B /* vertias_app_core.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8BB2F72BAB700682AF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4744F8C42F72BAB700682AF2 /* veritasTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4744F8C52F72BAB700682AF2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4744F8CE2F72BAB700682AF2 /* veritasUITests.swift in Sources */,
+				4744F8D02F72BAB700682AF2 /* veritasUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		473A20DB2F74C71E0056F92B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 473A20CF2F74C71E0056F92B /* VeritasShare */;
+			targetProxy = 473A20DA2F74C71E0056F92B /* PBXContainerItemProxy */;
+		};
+		4744F8C12F72BAB700682AF2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4744F8AD2F72BAB500682AF2 /* veritas */;
+			targetProxy = 4744F8C02F72BAB700682AF2 /* PBXContainerItemProxy */;
+		};
+		4744F8CB2F72BAB700682AF2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4744F8AD2F72BAB500682AF2 /* veritas */;
+			targetProxy = 4744F8CA2F72BAB700682AF2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		473A20DF2F74C71E0056F92B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VeritasShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = VeritasShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritas.VeritasShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		473A20E02F74C71E0056F92B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VeritasShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = VeritasShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritas.VeritasShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4744F8D12F72BAB700682AF2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4MA7A64R76;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4744F8D22F72BAB700682AF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4MA7A64R76;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4744F8D42F72BAB700682AF2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = veritas/veritas.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"veritas/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = veritas/Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritas;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4744F8D52F72BAB700682AF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = veritas/veritas.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"veritas/Preview Content\"";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = veritas/Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritas;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4744F8D72F72BAB700682AF2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritasTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/veritas.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/veritas";
+			};
+			name = Debug;
+		};
+		4744F8D82F72BAB700682AF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritasTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/veritas.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/veritas";
+			};
+			name = Release;
+		};
+		4744F8DA2F72BAB700682AF2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritasUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = veritas;
+			};
+			name = Debug;
+		};
+		4744F8DB2F72BAB700682AF2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 100;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.impervious.veritasUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = veritas;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		473A20DE2F74C71E0056F92B /* Build configuration list for PBXNativeTarget "VeritasShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				473A20DF2F74C71E0056F92B /* Debug */,
+				473A20E02F74C71E0056F92B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4744F8A92F72BAB500682AF2 /* Build configuration list for PBXProject "veritas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4744F8D12F72BAB700682AF2 /* Debug */,
+				4744F8D22F72BAB700682AF2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4744F8D32F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4744F8D42F72BAB700682AF2 /* Debug */,
+				4744F8D52F72BAB700682AF2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4744F8D62F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritasTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4744F8D72F72BAB700682AF2 /* Debug */,
+				4744F8D82F72BAB700682AF2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4744F8D92F72BAB700682AF2 /* Build configuration list for PBXNativeTarget "veritasUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4744F8DA2F72BAB700682AF2 /* Debug */,
+				4744F8DB2F72BAB700682AF2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4744F8A62F72BAB500682AF2 /* Project object */;
+}

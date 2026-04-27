@@ -1,0 +1,69 @@
+name: Release-plz
+
+permissions:
+  pull-requests: write
+  contents: write
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release-plz-pr:
+    name: Release-plz PR
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        id: release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Sync the Cargo version into the Xcode project on the release PR branch
+      - name: Sync Xcode version
+        if: steps.release-plz.outputs.prs_created == 'true' || steps.release-plz.outputs.prs_updated == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_BRANCH=$(gh pr list --label "release" --json headRefName -q '.[0].headRefName')
+          if [ -z "$PR_BRANCH" ]; then
+            echo "No release PR branch found, skipping"
+            exit 0
+          fi
+          git fetch origin "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          bash scripts/sync-version.sh
+          if git diff --quiet; then
+            echo "No Xcode version changes needed"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add app/veritas.xcodeproj/project.pbxproj
+            git commit -m "chore: sync Xcode version"
+            git push origin "$PR_BRANCH"
+          fi
+
+  release-plz-release:
+    name: Release-plz release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLZ_TOKEN }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PLZ_TOKEN }}

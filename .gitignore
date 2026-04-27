@@ -1,0 +1,19 @@
+# Rust
+target/
+core/target/
+core/build/
+core/.env
+
+# Xcode
+app/**/DerivedData/
+app/**/*.xcuserdata/
+app/**/xcuserdata/
+
+# Generated bindings (rebuilt by build-local.sh)
+app/veritas/vertias_app_core.swift
+app/veritas/vertias_app_coreFFI.xcframework/
+
+# IDE
+.idea/
+*.swp
+.DS_Store
