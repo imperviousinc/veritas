@@ -75,9 +75,8 @@ class VeritasViewModel: ObservableObject {
         syncPhase = nil
         checkpointLoading = true
 
-        // checkCheckpoint() may do a network call - run off main thread
         Task.detached { [weak self] in
-            let checkpoint = veritas.checkCheckpoint()
+            let checkpoint = await veritas.checkCheckpoint()
             print("[Veritas] checkCheckpoint - needs: \(checkpoint.needsCheckpoint), hardcoded: \(checkpoint.hardcodedHeight), latest: \(checkpoint.latest?.height ?? 0)")
 
             await MainActor.run {

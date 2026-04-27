@@ -440,7 +440,7 @@ impl Veritas {
 
     /// Check checkpoint status. Call before start() to show the user
     /// whether a checkpoint is needed and if a newer one is available.
-    pub fn check_checkpoint(&self) -> CheckpointInfo {
+    pub async fn check_checkpoint(&self) -> CheckpointInfo {
         let spaced_dir = self.data_dir
             .join("spaced")
             .join(self.network.to_string());
@@ -448,7 +448,10 @@ impl Veritas {
         let needs = spaces_checkpoint::needs_checkpoint(&spaced_dir);
         let hardcoded_height = spaces_checkpoint::integrity::checkpoint().height;
 
-        let latest = spaces_checkpoint::fetch_latest(spaces_checkpoint::CHECKPOINT_BASE_URL)
+        let latest = tokio::task::spawn_blocking(|| {
+            spaces_checkpoint::fetch_latest(spaces_checkpoint::CHECKPOINT_BASE_URL).ok().flatten()
+        })
+            .await
             .ok()
             .flatten()
             .filter(|cp| cp.height > hardcoded_height)

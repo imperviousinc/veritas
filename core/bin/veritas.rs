@@ -34,22 +34,23 @@ fn main() -> anyhow::Result<()> {
     let seeds = if cli.seed.is_empty() { None } else { Some(cli.seed) };
     let app = Veritas::new(cli.data_dir, None, seeds);
 
-    if cli.no_checkpoint {
-        app.skip_checkpoint();
-    } else if let Some(cp) = resolve_checkpoint(&app, cli.latest_checkpoint)? {
-        app.use_checkpoint(cp);
-    }
-
     let rt = tokio::runtime::Runtime::new()?;
-    rt.block_on(run(app, cli.verbose))
+    rt.block_on(async {
+        if cli.no_checkpoint {
+            app.skip_checkpoint();
+        } else if let Some(cp) = resolve_checkpoint(&app, cli.latest_checkpoint).await? {
+            app.use_checkpoint(cp);
+        }
+        run(app, cli.verbose).await
+    })
 }
 
 /// Check if a newer checkpoint is available and prompt the user.
-fn resolve_checkpoint(
+async fn resolve_checkpoint(
     app: &Arc<Veritas>,
     use_latest: bool,
 ) -> anyhow::Result<Option<CheckpointOption>> {
-    let info = app.check_checkpoint();
+    let info = app.check_checkpoint().await;
 
     if !info.needs_checkpoint {
         return Ok(None);
