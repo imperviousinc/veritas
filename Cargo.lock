@@ -730,9 +730,9 @@ dependencies = [
 
 [[package]]
 name = "borsh_utils"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a4dfa09c15f642d281e02a3837ddd26f6133508d43fe7d80fed8c6a6e0f5caa2"
+checksum = "1a9716bbbca7bd5eb81c46151ef82ce10ebcf428f63397371284b2b705c28cb9"
 dependencies = [
  "bitcoin",
  "borsh",
@@ -1203,10 +1203,11 @@ dependencies = [
 
 [[package]]
 name = "fabric-resolver"
-version = "0.2.3"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f174f1993b992910cd2cf9f72cedbf8e3fd808281ce5fbf7ad9d88f659c17de"
+checksum = "02832e467ff6b428b4b8eef4e3a50f231ce9651445680dea168e849f4c53bb8d"
 dependencies = [
+ "borsh",
  "dashmap",
  "hex",
  "libveritas",
@@ -2124,9 +2125,9 @@ dependencies = [
 
 [[package]]
 name = "libveritas"
-version = "0.2.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9b646e5e793b4a806c5f17646e7b6a1eb9f1ab89b5539f3249e99f02c175e95"
+checksum = "6509a45e4b44e68fbcf5748dccb74d15f50fd02919c784bf5155dc8792d42580"
 dependencies = [
  "base64 0.22.1",
  "borsh",
@@ -3475,9 +3476,9 @@ dependencies = [
 
 [[package]]
 name = "sip7"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b36b86b0da0b64d08a6b0685891b6ba542fe52b01d542a8b6439ff89612518a1"
+checksum = "e0ed9b8980298850d71acd2c96f55bef13a4e4d28d2976c503a86c69c791fd34"
 dependencies = [
  "base64 0.22.1",
  "hex",
@@ -3561,9 +3562,9 @@ dependencies = [
 
 [[package]]
 name = "spaces_checkpoint"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24d4a289ae681b8f353f868f02d7d76bf9d801e93c44a32971eee630cb904f82"
+checksum = "611add09bc1b52a4739a71bb15bcbdb162449c668bf0c74f8c4a48835c4e5c60"
 dependencies = [
  "anyhow",
  "clap",
@@ -3581,9 +3582,9 @@ dependencies = [
 
 [[package]]
 name = "spaces_client"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e97c45d15126ec9d75390aaff90f997eaf9c985d9bb4c872afdcb65546108e10"
+checksum = "a27ec4e8bc75f0f2e87beb778702149efd341a0b10efe42493b3de32a670d64c"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3616,9 +3617,9 @@ dependencies = [
 
 [[package]]
 name = "spaces_nums"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7848223efb973297723383234aff01c772fe383f6849bd6d3c0d257c83766c76"
+checksum = "d6b842f5b10f200e3c9548489657da4e889897183c72d35673f27d20c2ecb3be"
 dependencies = [
  "bech32",
  "bitcoin",
@@ -3632,9 +3633,9 @@ dependencies = [
 
 [[package]]
 name = "spaces_protocol"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ea63b4a6544d3df35aceb1d1ad4ad2c9f59cc3aa7df5f381241df8dd399ec45"
+checksum = "69f412ceb3e0a1ce5ca00a8cc7bb875cd614ba7ac809e4085502ec397e354a4a"
 dependencies = [
  "bitcoin",
  "borsh",
@@ -3644,9 +3645,9 @@ dependencies = [
 
 [[package]]
 name = "spaces_wallet"
-version = "0.1.1"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfd1e5e22633d6c28e615fed4e37a574f3ce2317abf66fe71132d2f315c61b68"
+checksum = "b6ba9c85e7685c47229c8430cb9496c67799af42b7c9bc64f12e15245a601aa2"
 dependencies = [
  "anyhow",
  "bdk_wallet_backport",

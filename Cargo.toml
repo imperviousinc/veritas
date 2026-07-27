@@ -22,10 +22,10 @@ path = "core/bin/uniffi_bindgen.rs"
 
 [dependencies]
 tokio = { version = "1.37", features = ["sync", "rt-multi-thread", "macros"] }
-spaces_client = "0.1"
-spaces_nums = "0.1"
-spaces_protocol = { version = "0.1", features = ["std"] }
-spaces_checkpoint = "0.1"
+spaces_client = "0.2"
+spaces_nums = "0.2"
+spaces_protocol = { version = "0.2", features = ["std"] }
+spaces_checkpoint = "0.2"
 fabric = { package = "fabric-resolver", version = "0.2" }
 yuki = { package = "bitcoin_yuki", version = "0.0.1" }
 anyhow = "1.0.102"
