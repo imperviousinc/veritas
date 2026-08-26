@@ -2529,6 +2529,32 @@ struct SettingsView: View {
                     .padding(.top, 4)
                     .transition(.opacity)
                 }
+
+                // Quit
+                Button {
+                    viewModel.stopPolling()
+                    viewModel.stopRefreshing()
+                    viewModel.veritas?.stop()
+                    NSApp.terminate(nil)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "power")
+                            .font(.system(size: 11, weight: .medium))
+                        Text("Quit Veritas")
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                        Spacer()
+                    }
+                    .foregroundStyle(.white.opacity(0.4))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(.white.opacity(0.04))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(.white.opacity(0.06), lineWidth: 1)
+                    }
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 24)
             .animation(.easeInOut(duration: 0.2), value: showResetConfirm)
