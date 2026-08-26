@@ -120,10 +120,10 @@ jobs:
             <string>manual</string>
             <key>provisioningProfiles</key>
             <dict>
-              <key>com.impervious.veritas</key>
-              <string>Veritas Developer ID</string>
-              <key>com.impervious.veritas.VeritasShare</key>
-              <string>VeritasShare Developer ID</string>
+              <key>com.lcfx.veritas</key>
+              <string>com.lcfx.veritas Developer ID</string>
+              <key>com.lcfx.veritas.VeritasShare</key>
+              <string>com.lcfx.veritas.VeritasShare Developer ID</string>
             </dict>
           </dict>
           </plist>
