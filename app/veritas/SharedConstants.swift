@@ -1,7 +1,7 @@
 import Foundation
 
 enum VeritasShared {
-    static let appGroupID = "group.com.impervious.veritas"
+    static let appGroupID = "group.com.lcfx.veritas"
     static let pendingQueryKey = "pendingShareQuery"
     static let urlScheme = "veritas"
 
