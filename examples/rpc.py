@@ -6,17 +6,43 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import os
 import sys
 import urllib.error
 import urllib.request
+from pathlib import Path
 
-RPC_URL = "http://127.0.0.1:12888"
-RPC_USER = "436813c5b4dc2c63"
-RPC_PASSWORD = "19a87f2055b28a5054635ac6baaa40fc"
+
+def load_env_file(path: Path) -> None:
+    if not path.is_file():
+        return
+    for raw in path.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip("'").strip('"')
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+load_env_file(Path(__file__).resolve().parent / "rpc.env")
+
+RPC_URL = os.environ.get("SPACED_RPC_URL", "http://127.0.0.1:12888")
+RPC_USER = os.environ.get("SPACED_RPC_USER", "")
+RPC_PASSWORD = os.environ.get("SPACED_RPC_PASSWORD", "")
+if not RPC_USER or not RPC_PASSWORD:
+    sys.exit(
+        "Set SPACED_RPC_USER and SPACED_RPC_PASSWORD (they change each Veritas start).\n"
+        "Copy them from Settings → RPC Credentials, then either:\n"
+        "  export SPACED_RPC_USER=... SPACED_RPC_PASSWORD=...\n"
+        "  or write them to examples/rpc.env (see rpc.env.example)"
+    )
 
 
 def as_space(name: str) -> str:
-    """getspace wants '@lunde', not a handle like 'andrew@lunde'."""
+    """getspace wants '@space', not a handle like 'subspace@space'."""
     if "@" in name and not name.startswith("@"):
         space = "@" + name.rsplit("@", 1)[-1]
         print(
@@ -42,10 +68,18 @@ def call(method: str, params: list | None = None) -> object:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        with urllib.request.urlopen(req, timeout=60) as resp:
             payload = json.load(resp)
     except urllib.error.HTTPError as e:
-        sys.exit(f"HTTP {e.code}: {e.read().decode(errors='replace')}")
+        body = e.read().decode(errors="replace")
+        extra = ""
+        if e.code == 401:
+            extra = (
+                "\nRPC credentials are stale. Copy the current pair from "
+                "Settings → RPC Credentials, then update SPACED_RPC_USER / "
+                "SPACED_RPC_PASSWORD or examples/rpc.env."
+            )
+        sys.exit(f"HTTP {e.code}: {body}{extra}")
     except urllib.error.URLError as e:
         sys.exit(f"Could not reach {RPC_URL} ({e.reason}). Is Veritas running?")
 
@@ -63,12 +97,13 @@ def main() -> None:
     sub.add_parser("discover")
 
     for name, arg, help_text in [
-        ("getspace", "name", "space name, e.g. @lunde"),
-        ("getspaceowner", "name", "space name, e.g. @lunde"),
+        ("getspace", "name", "space name, e.g. @space"),
+        ("getspaceowner", "name", "space name, e.g. @space"),
         ("getnum", "subject", "num subject, e.g. #1-2-3"),
         ("getcommitment", "subject", "@space, #numeric, or num1..."),
         ("getdelegation", "subject", "@space, #numeric, or num1..."),
         ("getfallback", "subject", "@space, #numeric, or num1..."),
+        ("queryhandle", "handle", "fabric handle (subspace@space) or space (@space)"),
     ]:
         sp = sub.add_parser(name)
         sp.add_argument(arg, help=help_text)
@@ -91,7 +126,7 @@ def main() -> None:
     elif cmd == "raw":
         result = call(args.method, json.loads(args.params))
     else:
-        value = getattr(args, "name", None) or getattr(args, "subject")
+        value = getattr(args, "name", None) or getattr(args, "subject", None) or getattr(args, "handle", None)
         if cmd in ("getspace", "getspaceowner"):
             value = as_space(value)
         result = call(cmd, [value])

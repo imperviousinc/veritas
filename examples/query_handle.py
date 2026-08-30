@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Query a fabric handle (default: andrew@lunde) from certrelay."""
+"""Query a fabric handle (default: subspace@space) from certrelay."""
 
 from __future__ import annotations
 
 import json
 import os
+import random
 import sys
 import urllib.error
 import urllib.parse
 import urllib.request
 
-HANDLE = sys.argv[1] if len(sys.argv) > 1 else "andrew@lunde"
+HANDLE = sys.argv[1] if len(sys.argv) > 1 else "subspace@space"
 DEFAULT_RELAYS = (
     "https://relay-cosmos.spacesprotocol.org",
     "https://relay-atlas.spacesprotocol.org",
@@ -24,7 +25,7 @@ EXCLUDE_CERTRELAY_URL = os.environ.get(
 
 def fabric_q(handle: str) -> str:
     if "@" not in handle or handle.startswith("@"):
-        sys.exit("usage: query_handle.py <label@space>     e.g. andrew@lunde")
+        sys.exit("usage: query_handle.py <label@space>     e.g. subspace@space")
     space = "@" + handle.rsplit("@", 1)[-1]
     return f"{space},{handle}"
 
@@ -96,6 +97,7 @@ def main() -> None:
     relays = discover_relays(seeds, blocked)
     if not relays:
         sys.exit(f"No relays left after EXCLUDE_CERTRELAY_URL={EXCLUDE_CERTRELAY_URL}")
+    random.shuffle(relays)
 
     last_error = "no relays"
     for relay in relays:

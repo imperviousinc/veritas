@@ -1,19 +1,24 @@
 # RPC and handle examples
 
-Veritas embeds a [spaced](https://github.com/spacesprotocol/spaces) JSON-RPC server on **mainnet** at:
+Veritas embeds a JSON-RPC server on **mainnet** at:
 
 ```
 http://127.0.0.1:12888
 ```
 
-Auth is HTTP Basic. These examples use the credentials from Settings → RPC Credentials:
+Auth is HTTP Basic. Credentials are generated when Veritas starts and change on every restart. Copy the current pair from Settings → RPC Credentials.
 
-```
-user:     436813c5b4dc2c63
-password: 19a87f2055b28a5054635ac6baaa40fc
+Copy the current pair from Settings → RPC Credentials (`user:password`), then:
+
+```bash
+source ./setup-env.sh "$(pbpaste)"
+# or
+source ./setup-env.sh '<user>:<password>'
 ```
 
-They are generated when Veritas starts. If a call returns `401 Unauthorized`, copy the current pair from Settings.
+That exports `SPACED_RPC_USER` / `SPACED_RPC_PASSWORD` and writes `examples/rpc.env` (gitignored). After a Veritas restart, run it again with the new copied pair.
+
+`eval "$(./setup-env.sh '<user>:<password>')"` also works if you prefer not to `source`.
 
 Veritas must be running (menu bar icon present, sync Ready or at least spaced listening).
 
@@ -21,18 +26,19 @@ Veritas must be running (menu bar icon present, sync Ready or at least spaced li
 
 ```bash
 ./examples/rpc.sh getserverinfo
-./examples/rpc.sh getspace @lunde
+./examples/rpc.sh getspace @space
 ./examples/rpc.sh getrootanchors
+./examples/rpc.sh queryhandle subspace@space
 ```
 
-`getspace` is the on-chain **space** (`@lunde`), not a fabric handle (`andrew@lunde`). Handles are resolved in the Veritas search UI via certrelay, not this RPC.
+`getspace` is the on-chain **space** (`@space`). `queryhandle` takes a fabric handle (`subspace@space`) or a space (`@space`); a space is served as `getspace`.
 
 Or raw:
 
 ```bash
-curl -sS -u '436813c5b4dc2c63:19a87f2055b28a5054635ac6baaa40fc' \
+curl -sS -u "$SPACED_RPC_USER:$SPACED_RPC_PASSWORD" \
   -H 'Content-Type: application/json' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"getserverinfo","params":[]}' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"queryhandle","params":["subspace@space"]}' \
   http://127.0.0.1:12888
 ```
 
@@ -40,33 +46,24 @@ curl -sS -u '436813c5b4dc2c63:19a87f2055b28a5054635ac6baaa40fc' \
 
 ```bash
 python3 examples/rpc.py getserverinfo
-python3 examples/rpc.py getspace @lunde
-python3 examples/rpc.py getcommitment @lunde
+python3 examples/rpc.py getspace @space
+python3 examples/rpc.py getcommitment @space
+python3 examples/rpc.py queryhandle subspace@space
 ```
 
-## Handle: `andrew@lunde`
+## Handle: `subspace@space`
 
-A handle is not a spaced `getspace` argument. Query it through certrelay
-(`GET /query?q=@lunde,andrew@lunde`) — the same request the Veritas search UI sends.
+`queryhandle` runs inside Veritas: a space (`@space`) is answered with spaced `getspace`. A handle (`subspace@space`) queries certrelay (`GET /query?q=@space,subspace@space`), skips relays in `EXCLUDE_CERTRELAY_URL` (default `http://70.251.209.207:47778`), picks a random non-excluded relay first (then failovers), and returns the decoded proof as JSON. If the handle has an on-chain num, that num's `getfallback` records are included as `fallback_records`.
 
 ```bash
-# Raw proof from a public relay (binary Message)
-./examples/query_handle.sh andrew@lunde
-python3 examples/query_handle.py andrew@lunde
-
-# Decode the proof and print the handle
-cargo run --example resolve_handle -- andrew@lunde
+./examples/rpc.sh queryhandle subspace@space
+python3 examples/rpc.py queryhandle subspace@space
 ```
 
-The certrelay query is `GET /query?q=@lunde,andrew@lunde`.
-
-`EXCLUDE_CERTRELAY_URL` defaults to `http://70.251.209.207:47778`. Relays on that comma-separated list are skipped even if they are bootstrap seeds or appear in `/peers`:
+Standalone certrelay scripts (no Veritas required) are still in this directory:
 
 ```bash
-# default exclude
-python3 examples/query_handle.py andrew@lunde
-
-# extra excludes
-EXCLUDE_CERTRELAY_URL='http://70.251.209.207:47778,http://127.0.0.1:7779' \
-  python3 examples/query_handle.py andrew@lunde
+./examples/query_handle.sh subspace@space
+python3 examples/query_handle.py subspace@space
+cargo run --example resolve_handle -- subspace@space
 ```

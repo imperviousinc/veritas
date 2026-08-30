@@ -13,11 +13,11 @@ APP_DIR="app/veritas"
 echo "==> Building for macOS (arm64)..."
 cargo build --release --target aarch64-apple-darwin
 
-echo "==> Building for iOS simulator (arm64)..."
-cargo build --release --target aarch64-apple-ios-sim
+# echo "==> Building for iOS simulator (arm64)..."
+# cargo build --release --target aarch64-apple-ios-sim
 
-echo "==> Building for iOS device (arm64)..."
-cargo build --release --target aarch64-apple-ios
+# echo "==> Building for iOS device (arm64)..."
+# cargo build --release --target aarch64-apple-ios
 
 echo "==> Generating Swift bindings..."
 cargo run --bin uniffi-bindgen generate \
@@ -35,10 +35,6 @@ rm -rf ${OUT_DIR}/${FFI_NAME}.xcframework
 
 xcodebuild -create-xcframework \
   -library target/aarch64-apple-darwin/release/${LIB_NAME}.a \
-  -headers ${OUT_DIR}/headers/ \
-  -library target/aarch64-apple-ios-sim/release/${LIB_NAME}.a \
-  -headers ${OUT_DIR}/headers/ \
-  -library target/aarch64-apple-ios/release/${LIB_NAME}.a \
   -headers ${OUT_DIR}/headers/ \
   -output ${OUT_DIR}/${FFI_NAME}.xcframework
 

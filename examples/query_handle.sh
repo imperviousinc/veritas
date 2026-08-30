@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Query a fabric handle (e.g. andrew@lunde) from certrelay.
+# Query a fabric handle (e.g. subspace@space) from certrelay.
 # This is the same GET /query the Veritas search UI uses — not spaced getspace.
 set -euo pipefail
 
-HANDLE="${1:-andrew@lunde}"
+HANDLE="${1:-subspace@space}"
 EXCLUDE_CERTRELAY_URL="${EXCLUDE_CERTRELAY_URL:-http://70.251.209.207:47778}"
 
 if [[ "$HANDLE" != *@* || "$HANDLE" == @* ]]; then
-  echo "usage: $0 <label@space>     e.g. $0 andrew@lunde" >&2
+  echo "usage: $0 <label@space>     e.g. $0 subspace@space" >&2
   exit 1
 fi
 
@@ -109,6 +109,14 @@ if [[ ${#relays[@]} -eq 0 ]]; then
   echo "No relays left after EXCLUDE_CERTRELAY_URL=${EXCLUDE_CERTRELAY_URL}" >&2
   exit 1
 fi
+
+# Pick a random order among non-excluded relays.
+for ((i=${#relays[@]}-1; i>0; i--)); do
+  j=$((RANDOM % (i + 1)))
+  tmp="${relays[i]}"
+  relays[i]="${relays[j]}"
+  relays[j]="$tmp"
+done
 
 out="$(mktemp -t certrelay-query.XXXXXX)"
 trap 'rm -f "$out"' EXIT

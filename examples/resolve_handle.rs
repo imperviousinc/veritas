@@ -1,14 +1,14 @@
-//! Query a fabric handle (default: `andrew@lunde`) from certrelay and print
+//! Query a fabric handle (default: `subspace@space`) from certrelay and print
 //! the handles + SIP-7 records in the proof.
 //!
-//! This is `GET /query?q=@lunde,andrew@lunde` — the same request the Veritas
+//! This is `GET /query?q=@space,subspace@space` — the same request the Veritas
 //! search UI sends. It is not spaced `getspace`.
 //!
 //! Relays in `EXCLUDE_CERTRELAY_URL` (comma-separated) are skipped even if
 //! they appear as bootstrap seeds or in `/peers`.
 //!
 //! ```bash
-//! cargo run --example resolve_handle -- andrew@lunde
+//! cargo run --example resolve_handle -- subspace@space
 //! ```
 
 use fabric::libveritas::sip7;
@@ -27,10 +27,10 @@ const DEFAULT_EXCLUDE: &str = "http://70.251.209.207:47778";
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let handle = std::env::args()
         .nth(1)
-        .unwrap_or_else(|| "andrew@lunde".to_string());
+        .unwrap_or_else(|| "subspace@space".to_string());
 
     if !handle.contains('@') || handle.starts_with('@') {
-        eprintln!("usage: resolve_handle <label@space>     e.g. andrew@lunde");
+        eprintln!("usage: resolve_handle <label@space>     e.g. subspace@space");
         std::process::exit(1);
     }
 
@@ -40,11 +40,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(url) if !url.is_empty() => vec![url],
         _ => DEFAULT_RELAYS.iter().map(|s| s.to_string()).collect(),
     };
-    let relays = discover_relays(&seeds, &blocked)?;
+    let mut relays = discover_relays(&seeds, &blocked)?;
     if relays.is_empty() {
         eprintln!("No relays left after EXCLUDE_CERTRELAY_URL={exclude}");
         std::process::exit(1);
     }
+    shuffle(&mut relays);
+    eprintln!(
+        "trying {} non-excluded relays, first={}",
+        relays.len(),
+        relays[0]
+    );
 
     let space = format!("@{}", handle.rsplit('@').next().unwrap());
     let q = format!("{space},{handle}");
@@ -138,6 +144,23 @@ fn excluded_keys(raw: &str) -> HashSet<String> {
 fn is_excluded(url: &str, blocked: &HashSet<String>) -> bool {
     let key = relay_key(url);
     !key.is_empty() && blocked.contains(&key)
+}
+
+fn shuffle<T>(items: &mut [T]) {
+    if items.len() < 2 {
+        return;
+    }
+    let mut seed = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_nanos() as u64)
+        .unwrap_or(1);
+    let marker: u8 = 0;
+    seed ^= std::ptr::addr_of!(marker) as u64;
+    for i in (1..items.len()).rev() {
+        seed = seed.wrapping_mul(0x9E37_79B9_7F4A_7C15).wrapping_add(1);
+        let j = (seed as usize) % (i + 1);
+        items.swap(i, j);
+    }
 }
 
 fn add_relay(url: &str, ordered: &mut Vec<String>, seen: &mut HashSet<String>, blocked: &HashSet<String>) {
