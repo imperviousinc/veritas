@@ -29,7 +29,9 @@ Options:
 ## Architecture
 
 - **`core/src/lib.rs`** - `Veritas` UniFFI object: manages service lifecycle, exposes async RPC methods to Swift
-- **`core/src/runner.rs`** - `ServiceRunner`: launches yuki and spaced in isolated threads with dedicated tokio runtimes
+- **`core/src/runner.rs`** - `ServiceRunner`: launches yuki, spaced, and the public RPC proxy in isolated threads
+- **`core/src/query_handle.rs`** - Certrelay handle query (`queryhandle` JSON-RPC)
+- **`core/src/rpc_proxy.rs`** - Public JSON-RPC on port 12888 (`queryhandle` + forward to spaced)
 - **`core/src/checkpoint.rs`** - Checkpoint download/verification on first launch
 - **`core/src/nostr.rs`** - Nostr relay communication: fetch and verify `#veritas` tagged events
 - **`core/src/logging.rs`** - Tracing capture layer that buffers log entries for the Swift log viewer
