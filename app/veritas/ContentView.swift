@@ -54,6 +54,7 @@ class VeritasViewModel: ObservableObject {
 
     func configure(_ veritas: Veritas) {
         self.veritas = veritas
+        applySavedSettings()
     }
 
     /// Re-create a fresh Veritas instance after a reset
@@ -64,6 +65,17 @@ class VeritasViewModel: ObservableObject {
         let dataDirURL = appSupport.appendingPathComponent("Veritas")
         try? FileManager.default.createDirectory(at: dataDirURL, withIntermediateDirectories: true)
         self.veritas = Veritas(dataDir: dataDirURL.path, external: nil, seeds: nil)
+        applySavedSettings()
+    }
+
+    func applySavedSettings() {
+        guard let veritas else { return }
+        do {
+            try veritas.setRpcPort(port: AppSettings.rpcPort)
+        } catch {
+            print("[Veritas] setRpcPort failed: \(error)")
+        }
+        veritas.setExcludeRelays(list: AppSettings.excludeRelays)
     }
 
     /// Check checkpoint status and start services - prompts user if a non-hardcoded checkpoint is available.
@@ -140,6 +152,8 @@ class VeritasViewModel: ObservableObject {
         Task.detached { [veritas] in
             guard let veritas else { return }
             do {
+                try veritas.setRpcPort(port: AppSettings.rpcPort)
+                veritas.setExcludeRelays(list: AppSettings.excludeRelays)
                 try veritas.start()
             } catch let error as VeritasError {
                 await MainActor.run { [weak self] in
@@ -219,6 +233,7 @@ class VeritasViewModel: ObservableObject {
             user: user,
             password: password
         ), seeds: nil)
+        applySavedSettings()
     }
 
     func fetchData() async {
@@ -1167,6 +1182,7 @@ struct SearchView: View {
 
     @State private var zone: Zone?
     @State private var records: [ParsedRecord] = []
+    @State private var fallbackRecords: [ParsedRecord] = []
     @State private var nostrMessages: [NostrMessage] = []
     @State private var isLoading = false
     @State private var isSearchingNostr = false
@@ -1232,6 +1248,7 @@ struct SearchView: View {
             Button(action: {
                 zone = nil
                 records = []
+                fallbackRecords = []
                 nostrMessages = []
                 errorMessage = nil
                 onBack()
@@ -1263,6 +1280,7 @@ struct SearchView: View {
                         query = ""
                         zone = nil
                         records = []
+                        fallbackRecords = []
                         nostrMessages = []
                         errorMessage = nil
                     } label: {
@@ -1322,6 +1340,7 @@ struct SearchView: View {
         errorMessage = nil
         zone = nil
         records = []
+        fallbackRecords = []
         nostrMessages = []
         isSearchingNostr = false
 
@@ -1348,10 +1367,15 @@ struct SearchView: View {
                     return
                 }
                 zone = resolved
-                let data = resolved.records ?? resolved.fallbackRecords
+                let data = resolved.records.isEmpty ? resolved.fallbackRecords : resolved.records
                 let parsedRecords = parseRecords(data)
                 records = parsedRecords
                 isLoading = false
+
+                if let numId = resolved.numId, !numId.isEmpty,
+                   let fb = try? await veritas.getFallback(subject: numId) {
+                    fallbackRecords = parseRecords(Data(base64Encoded: fb.data))
+                }
 
                 // Step 2: If pasted entry, extract npub + relays and search for nostr messages
                 if isPastedEntry {
@@ -1422,6 +1446,14 @@ struct SearchView: View {
                     }
                 }
 
+                if !displayFallbackRecords.isEmpty {
+                    VStack(alignment: .leading, spacing: 2) {
+                        ForEach(Array(displayFallbackRecords.enumerated()), id: \.offset) { _, record in
+                            recordRow(record)
+                        }
+                    }
+                }
+
                 // More (raw data + export cert)
                 moreSection(zone)
             }
@@ -1461,6 +1493,15 @@ struct SearchView: View {
         }
     }
 
+    private var displayFallbackRecords: [ParsedRecord] {
+        fallbackRecords.filter { record in
+            switch record {
+            case .txt, .addr, .blob: return true
+            case .seq, .sig, .malformed, .unknown: return false
+            }
+        }
+    }
+
     private func recordRow(_ record: ParsedRecord) -> some View {
         Group {
             switch record {
@@ -1476,7 +1517,7 @@ struct SearchView: View {
                             Text(index == 0 ? key.uppercased() : "")
                                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                                 .foregroundStyle(.white.opacity(0.3))
-                                .frame(width: 44, alignment: .leading)
+                                .frame(width: 56, alignment: .leading)
 
                             Text(value)
                                 .font(.system(size: 10.5, weight: .regular, design: .monospaced))
@@ -1514,7 +1555,7 @@ struct SearchView: View {
                             Text(index == 0 ? key.uppercased() : "RELAY")
                                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                                 .foregroundStyle(.white.opacity(0.3))
-                                .frame(width: 44, alignment: .leading)
+                                .frame(width: 56, alignment: .leading)
 
                             Text(value)
                                 .font(.system(size: 10.5, weight: .regular, design: .monospaced))
@@ -1595,7 +1636,11 @@ struct SearchView: View {
             Image(systemName: "envelope")
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(.blue.opacity(0.6))
-        case "web":
+        case "telegram":
+            Image(systemName: "paperplane.fill")
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.cyan.opacity(0.7))
+        case "web", "website":
             Image(systemName: "globe")
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(.cyan.opacity(0.6))
@@ -1608,8 +1653,9 @@ struct SearchView: View {
 
     private func recordAction(_ key: String) -> String {
         switch key.lowercased() {
-        case "web": return "arrow.up.right"
+        case "web", "website": return "arrow.up.right"
         case "email": return "envelope"
+        case "telegram": return "arrow.up.right"
         default: return "doc.on.doc"
         }
     }
@@ -1620,7 +1666,22 @@ struct SearchView: View {
             if let url = URL(string: "mailto:\(value)") {
                 NSWorkspace.shared.open(url)
             }
-        case "web":
+        case "telegram":
+            var username = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if username.hasPrefix("https://t.me/") {
+                username = String(username.dropFirst("https://t.me/".count))
+            } else if username.hasPrefix("http://t.me/") {
+                username = String(username.dropFirst("http://t.me/".count))
+            } else if username.hasPrefix("t.me/") {
+                username = String(username.dropFirst("t.me/".count))
+            }
+            if username.hasPrefix("@") {
+                username = String(username.dropFirst())
+            }
+            if let url = URL(string: "https://t.me/\(username)") {
+                NSWorkspace.shared.open(url)
+            }
+        case "web", "website":
             var urlString = value
             if !urlString.hasPrefix("http") { urlString = "https://\(urlString)" }
             if let url = URL(string: urlString) {
@@ -2357,6 +2418,10 @@ struct SettingsView: View {
 
     @State private var showResetConfirm = false
     @State private var copiedRpc = false
+    @State private var rpcPortText = AppSettings.portText(AppSettings.rpcPort)
+    @State private var excludeText = AppSettings.excludeRelays
+    @State private var savedFlash = false
+    @State private var saveError: String?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -2379,8 +2444,9 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 15)
-            .padding(.bottom, 20)
+            .padding(.bottom, 12)
 
+            ScrollView {
             VStack(spacing: 14) {
                 // View Logs
                 Button {
@@ -2455,6 +2521,16 @@ struct SettingsView: View {
                                     .foregroundStyle(.white.opacity(0.4))
                                     .textSelection(.enabled)
                             }
+                            HStack(spacing: 6) {
+                                Text("URL")
+                                    .font(.system(size: 9, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(.white.opacity(0.25))
+                                    .frame(width: 32, alignment: .trailing)
+                                Text("http://127.0.0.1:\(AppSettings.portText(AppSettings.rpcPort))")
+                                    .font(.system(size: 10.5, weight: .regular, design: .monospaced))
+                                    .foregroundStyle(.white.opacity(0.4))
+                                    .textSelection(.enabled)
+                            }
                         }
                     }
                     .padding(.horizontal, 14)
@@ -2466,6 +2542,8 @@ struct SettingsView: View {
                             .stroke(.white.opacity(0.06), lineWidth: 1)
                     }
                 }
+
+                rpcPreferencesCard()
 
                 // Erase & Start Over
                 Button {
@@ -2529,17 +2607,195 @@ struct SettingsView: View {
                     .padding(.top, 4)
                     .transition(.opacity)
                 }
+
+                // Quit
+                Button {
+                    viewModel.stopPolling()
+                    viewModel.stopRefreshing()
+                    viewModel.veritas?.stop()
+                    NSApp.terminate(nil)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "power")
+                            .font(.system(size: 11, weight: .medium))
+                        Text("Quit Veritas")
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                        Spacer()
+                    }
+                    .foregroundStyle(.white.opacity(0.4))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(.white.opacity(0.04))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(.white.opacity(0.06), lineWidth: 1)
+                    }
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 24)
+            .padding(.bottom, 8)
             .animation(.easeInOut(duration: 0.2), value: showResetConfirm)
+            }
+            .onAppear { loadDrafts() }
 
-            Spacer()
+            Spacer(minLength: 0)
 
             // Version info
             Text("Veritas v0.1.0")
                 .font(.system(size: 10, weight: .regular, design: .rounded))
                 .foregroundStyle(.white.opacity(0.12))
                 .padding(.bottom, 16)
+        }
+    }
+
+    private var parsedPort: UInt32? {
+        let trimmed = rpcPortText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let value = UInt32(trimmed), value >= 1, value <= 65535 else { return nil }
+        return value
+    }
+
+    private var isDirty: Bool {
+        parsedPort != AppSettings.rpcPort
+            || excludeText != AppSettings.excludeRelays
+    }
+
+    private func loadDrafts() {
+        rpcPortText = AppSettings.portText(AppSettings.rpcPort)
+        excludeText = AppSettings.excludeRelays
+        saveError = nil
+        savedFlash = false
+    }
+
+    private func savePreferences() {
+        guard let port = parsedPort else {
+            saveError = "RPC port must be between 1 and 65535"
+            return
+        }
+        AppSettings.rpcPort = port
+        AppSettings.excludeRelays = excludeText.trimmingCharacters(in: .whitespacesAndNewlines)
+        excludeText = AppSettings.excludeRelays
+        do {
+            try viewModel.veritas?.setRpcPort(port: port)
+        } catch {
+            saveError = error.localizedDescription
+            return
+        }
+        viewModel.veritas?.setExcludeRelays(list: excludeText)
+        saveError = nil
+        savedFlash = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            savedFlash = false
+        }
+    }
+
+    @ViewBuilder
+    private func rpcPreferencesCard() -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.4))
+                Text("RPC & Relays")
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.4))
+                Spacer()
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("RPC Port")
+                    .font(.system(size: 9, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.25))
+                TextField("", text: $rpcPortText, prompt:
+                    Text(AppSettings.portText(AppSettings.defaultRpcPort))
+                        .foregroundStyle(.white.opacity(0.18))
+                )
+                .textFieldStyle(.plain)
+                .font(.system(size: 11, weight: .regular, design: .monospaced))
+                .foregroundStyle(.white.opacity(0.6))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(.white.opacity(0.04))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                }
+                .onChange(of: rpcPortText) { _, newValue in
+                    rpcPortText = newValue.filter(\.isNumber)
+                }
+                Text("JSON-RPC listens on 127.0.0.1. Default \(AppSettings.portText(AppSettings.defaultRpcPort)).")
+                    .font(.system(size: 9, weight: .regular, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.2))
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Exclude Relays")
+                    .font(.system(size: 9, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.25))
+                TextField("", text: $excludeText, prompt:
+                    Text("none")
+                        .foregroundStyle(.white.opacity(0.18))
+                )
+                .textFieldStyle(.plain)
+                .font(.system(size: 11, weight: .regular, design: .monospaced))
+                .foregroundStyle(.white.opacity(0.6))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(.white.opacity(0.04))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .stroke(.white.opacity(0.06), lineWidth: 1)
+                }
+                Text("Comma-separated URLs. Leave empty to exclude none.")
+                    .font(.system(size: 9, weight: .regular, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.2))
+            }
+
+            if let saveError {
+                Text(saveError)
+                    .font(.system(size: 10, weight: .regular, design: .rounded))
+                    .foregroundStyle(.red.opacity(0.7))
+            }
+
+            HStack(spacing: 12) {
+                Button {
+                    loadDrafts()
+                } label: {
+                    Text("Cancel")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.4))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(.white.opacity(0.04))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    savePreferences()
+                } label: {
+                    Text(savedFlash ? "Saved" : "Save")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(isDirty && parsedPort != nil ? 0.7 : 0.3))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(.white.opacity(0.06))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                .disabled(!isDirty || parsedPort == nil)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(.white.opacity(0.06), lineWidth: 1)
         }
     }
 

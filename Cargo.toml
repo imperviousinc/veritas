@@ -22,19 +22,23 @@ path = "core/bin/uniffi_bindgen.rs"
 
 [dependencies]
 tokio = { version = "1.37", features = ["sync", "rt-multi-thread", "macros"] }
-spaces_client = "0.2"
-spaces_nums = "0.2"
-spaces_protocol = { version = "0.2", features = ["std"] }
-spaces_checkpoint = "0.2"
-fabric = { package = "fabric-resolver", version = "0.2" }
+spaces_client = "0.3"
+spaces_nums = { version = "0.3", features = ["bech32"] }
+spaces_protocol = { version = "0.3", features = ["std"] }
+spaces_checkpoint = "0.3"
+fabric = { package = "fabric-resolver", version = "0.2.9" }
 yuki = { package = "bitcoin_yuki", version = "0.0.1" }
 anyhow = "1.0.102"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3", features = ["tracing-log"] }
 dirs = "6"
 thiserror = "2"
-serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
 hex = "0.4"
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+hyper = { version = "0.14", features = ["server", "http1", "tcp", "client", "runtime"] }
 uniffi = { version = "0.31", features = ["cli", "tokio"] }
 clap = { version = "4", features = ["derive"] }
 tokio-tungstenite = { version = "0.26", features = ["rustls-tls-webpki-roots"], optional = true }

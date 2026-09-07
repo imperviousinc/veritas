@@ -1,11 +1,14 @@
 pub mod logging;
 pub mod runner;
 mod checkpoint;
+mod query_handle;
+mod rpc_proxy;
 mod types;
 #[cfg(feature = "nostr")]
 mod nostr;
 
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, AtomicU16, Ordering};
 use std::sync::{Arc, Mutex};
 use fabric::anchor::AnchorSets;
 use fabric::client::Fabric;
@@ -340,6 +343,9 @@ pub struct Veritas {
     checkpoint_config: Mutex<CheckpointConfig>,
     rpc_user: String,
     rpc_password: String,
+    rpc_port: Arc<AtomicU16>,
+    rpc_rebind: Arc<tokio::sync::Notify>,
+    stopping: Arc<AtomicBool>,
     fabric: Fabric,
 }
 
@@ -399,6 +405,9 @@ impl Veritas {
             checkpoint_config: Mutex::new(CheckpointConfig::Default),
             rpc_user: hex::encode(&rand_bytes()[..8]),
             rpc_password: hex::encode(&rand_bytes()[..16]),
+            rpc_port: Arc::new(AtomicU16::new(runner::DEFAULT_RPC_PORT)),
+            rpc_rebind: Arc::new(tokio::sync::Notify::new()),
+            stopping: Arc::new(AtomicBool::new(false)),
             fabric,
         })
     }
@@ -431,6 +440,31 @@ impl Veritas {
             fabric::client::Badge::None => "none",
         };
         Ok(Some(types::zone_from_inner(&resolved, badge.into())))
+    }
+
+    /// Query a fabric handle through certrelay and return decoded records as JSON.
+    /// Same proof the search UI fetches. Also available as RPC method `queryhandle`.
+    /// If the handle has an on-chain num, includes that num's fallback records.
+    pub async fn query_handle(&self, handle: String) -> Result<String, VeritasError> {
+        let mut result = query_handle::query(&handle)
+            .await
+            .map_err(|msg| VeritasError::Rpc { msg })?;
+        if let Some(num_id) = result.num_id.clone() {
+            if let Ok(client) = self.rpc_client() {
+                if let Ok(subject) = num_id.parse() {
+                    if let Ok(Some(fb)) = client.get_fallback(subject).await {
+                        if let Some(recs) = fb
+                            .records
+                            .as_ref()
+                            .and_then(query_handle::fallback_records_from_set)
+                        {
+                            result.set_handle_fallback(recs);
+                        }
+                    }
+                }
+            }
+        }
+        serde_json::to_string(&result).map_err(|e| VeritasError::Rpc { msg: e.to_string() })
     }
 
     /// Export a `.spacecert` certificate chain for a handle.
@@ -526,6 +560,7 @@ impl Veritas {
             };
         }
 
+        self.stopping.store(false, Ordering::SeqCst);
         let (tx, _) = tokio::sync::broadcast::channel(1);
         {
             let mut guard = self.shutdown.lock().unwrap();
@@ -538,16 +573,47 @@ impl Veritas {
             tx,
             self.rpc_user.clone(),
             self.rpc_password.clone(),
+            self.rpc_port.clone(),
+            self.rpc_rebind.clone(),
+            self.stopping.clone(),
         );
         runner.run().map_err(VeritasError::from)
     }
 
     /// Signal all services to shut down. No-op in external mode.
     pub fn stop(&self) {
+        self.stopping.store(true, Ordering::SeqCst);
         let guard = self.shutdown.lock().unwrap();
         if let Some(tx) = guard.as_ref() {
             let _ = tx.send(());
         }
+    }
+
+    /// Public JSON-RPC listen port (default 12888). Takes effect immediately
+    /// if services are running (the proxy rebinds).
+    pub fn set_rpc_port(&self, port: u32) -> Result<(), VeritasError> {
+        if !(1..=65535).contains(&port) {
+            return Err(VeritasError::InvalidInput {
+                msg: "RPC port must be between 1 and 65535".into(),
+            });
+        }
+        let port = port as u16;
+        self.rpc_port.store(port, Ordering::SeqCst);
+        self.rpc_rebind.notify_waiters();
+        Ok(())
+    }
+
+    pub fn rpc_port(&self) -> u32 {
+        self.rpc_port.load(Ordering::SeqCst) as u32
+    }
+
+    /// Comma-separated certrelay URLs to skip. Empty string excludes none.
+    pub fn set_exclude_relays(&self, list: String) {
+        query_handle::set_exclude_relays(list);
+    }
+
+    pub fn exclude_relays(&self) -> String {
+        query_handle::current_exclude_relays()
     }
 
     /// Drain all log entries captured since the last call.
@@ -748,7 +814,7 @@ impl Veritas {
     }
 
     pub fn spaced_url(&self) -> String {
-        ServiceRunner::default_spaced_url(self.network)
+        ServiceRunner::public_url(self.rpc_port.load(Ordering::SeqCst))
     }
 
     /// RPC credentials for the embedded spaced instance.
@@ -820,7 +886,7 @@ impl Veritas {
         }
 
         let token = spaces_client::auth::auth_token_from_creds(&self.rpc_user, &self.rpc_password);
-        let url = self.spaced_url();
+        let url = ServiceRunner::default_spaced_backend_url(self.network);
         let client = spaces_client::auth::http_client_with_auth(&url, &token)
             .map_err(|e| VeritasError::Rpc { msg: e.to_string() })?;
         *guard = Some(client.clone());

@@ -20,3 +20,6 @@ app/veritas/vertias_app_coreFFI.xcframework/
 # Local debugging
 logs.txt
 *.provisionprofile
+examples/rpc.env
+examples/__pycache__/
+
