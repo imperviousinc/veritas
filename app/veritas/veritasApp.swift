@@ -58,7 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DistributedNotificationCenter.default().addObserver(
             self,
             selector: #selector(handleShareNotification(_:)),
-            name: NSNotification.Name("com.impervious.veritas.shareQuery"),
+            name: NSNotification.Name("com.lcfx.veritas.shareQuery"),
             object: nil
         )
     }

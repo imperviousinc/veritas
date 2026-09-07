@@ -105,7 +105,7 @@ class ShareViewController: NSViewController {
         if let query, !query.isEmpty {
             // Post a distributed notification so the main app picks it up
             DistributedNotificationCenter.default().postNotificationName(
-                NSNotification.Name("com.impervious.veritas.shareQuery"),
+                NSNotification.Name("com.lcfx.veritas.shareQuery"),
                 object: query,
                 userInfo: nil,
                 deliverImmediately: true

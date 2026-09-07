@@ -60,7 +60,7 @@
       queueDebuggingEnableBacktraceRecording = "Yes">
       <RemoteRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "com.impervious.veritas"
+         BundleIdentifier = "com.lcfx.veritas"
          RemotePath = "/Applications/Veritas.app">
       </RemoteRunnable>
       <MacroExpansion>

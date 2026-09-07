@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.impervious.veritas</string>
+		<string>group.com.lcfx.veritas</string>
 	</array>
 </dict>
 </plist>
