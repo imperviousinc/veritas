@@ -501,7 +501,7 @@ struct HomeView: View {
                     }
 
                 VStack {
-                    Image(nsImage: generateCleanQRCode(from: viewModel.trustAnchor))
+                    Image(nsImage: generateCleanQRCode(from: trustAnchorQRPayload(viewModel.trustAnchor)))
                         .interpolation(.none)
                         .resizable()
                         .scaledToFit()
@@ -2641,6 +2641,18 @@ struct GlowingDot: View {
 }
 
 // MARK: - QR Code Generation
+
+/// Payload encoded in the trust anchor QR code: `veritas://scan?id=<trust id>`
+private func trustAnchorQRPayload(_ trustId: String) -> String {
+    guard !trustId.isEmpty else { return "" }
+
+    var components = URLComponents()
+    components.scheme = "veritas"
+    components.host = "scan"
+    components.queryItems = [URLQueryItem(name: "id", value: trustId)]
+
+    return components.url?.absoluteString ?? ""
+}
 
 private func generateCleanQRCode(from string: String) -> NSImage {
     let context = CIContext()
